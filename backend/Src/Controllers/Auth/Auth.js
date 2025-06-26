@@ -1,6 +1,6 @@
 import { generateAndSetToken, otpCache } from "../../utils/utils.js";
 import { upsertSteamUser } from "../../client/Stream.js";
-import User from "../../models/User.js";
+import User from "../../Models/User.js";
 import bcrypt from "bcrypt";
 
 export const SignUp = async (req, res) => {
@@ -42,7 +42,7 @@ export const SignUp = async (req, res) => {
     const token = generateAndSetToken(res, newUser._id);
     const { password: _, ...userWithoutPassword } = newUser.toObject();
     console.table([{ UserName: newUser.fullName, token }]);
-    res.status(201).json({
+    return res.status(201).json({
       message: "User sign up successfully",
       user: { user: userWithoutPassword },
     });
@@ -63,14 +63,15 @@ export const Login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-    const isMatched = await bcrypt.compare(password, User.password);
+    const isMatched = await bcrypt.compare(password, user.password);
+    console.log(isMatched);
     if (!isMatched) {
       return res.status(400).json({ message: "Incorrect Password" });
     }
-    const token = generateAndSetToken(res, User._id);
-    console.table([{ UserName: User.fullName, token }]);
-    const { password: _, ...userWithoutPassword } = User.toObject();
-    res.status(201).json({
+    const token = generateAndSetToken(res, user._id);
+    console.table([{ UserName: user.fullName, token }]);
+    const { password: _, ...userWithoutPassword } = user.toObject();
+    return res.status(201).json({
       message: "Login successfully",
       user: { user: userWithoutPassword },
     });
@@ -146,5 +147,26 @@ export const ForgotPassword = async (req, res) => {
 
 export const Logout = (req, res) => {
   res.clearCookie("jwt");
-  res.status(200).json({ message: "Logout successfully" });
+  return res.status(200).json({ message: "Logout successfully" });
+};
+
+export const onBoarding = async (req, res) => {
+  const { location, age, language, bio } = req.body;
+  if (!location || !age || !language || !bio) {
+    return res.status(400).json({ message: "Missing Credentials" });
+  }
+  try {
+    await User.findOneAndUpdate(
+      req.body.userId,
+      { ...req.body, isOnBoarded: true },
+      { new: true, runValidators: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "User Profile updated successfully" });
+  } catch (error) {
+    return res.status(500).json({
+      message: `Internal Server Error: ${error.message}`,
+    });
+  }
 };
