@@ -12,12 +12,14 @@ const request = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    enum: ["accepted", "pending", "rejected"],
-    default: "pending",
-    type: string,
+    status: {
+      type: String,
+      default: "pending",
+      enum: ["accepted", "pending", "rejected"],
+    },
   },
   { timestamps: true }
 );
 
-const FriendRequest = mongoose.modal("FriendRequest", request);
+const FriendRequest = mongoose.model("FriendRequest", request);
 export default FriendRequest;

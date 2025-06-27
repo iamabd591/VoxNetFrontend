@@ -14,4 +14,13 @@ export const upsertSteamUser = async (userData) => {
   }
 };
 
-export const generateStramToken = async () => {};
+export const generateStramToken = async (userId) => {
+  try {
+    const strUserId = userId.toString();
+    const token = streamClient.createToken(strUserId);
+    console.log("✅ Stream token generated successfully");
+    return token;
+  } catch (error) {
+    console.error("❌ Error generating stream token", error);
+  }
+};

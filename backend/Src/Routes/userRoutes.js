@@ -21,3 +21,5 @@ router.post("/friend-request/:id", sentFriendRequest);
 router.get("/get-friend-requets", getFriendRequests);
 router.get("/recomended", recommendedUsers);
 router.get("/friends", friendsUsers);
+
+export default router;
