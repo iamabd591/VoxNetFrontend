@@ -9,6 +9,10 @@ import {
 } from "../Controllers/Auth/Auth.js";
 
 const router = express.Router();
+
+router.get("/me", authenticate, (req, res) => {
+  return res.status(200).json({ success: true, user: req.user });
+});
 router.post("/onBoarding", authenticate, onBoarding);
 router.post("/forgot-password", ForgotPassword);
 router.post("/signup", SignUp);
