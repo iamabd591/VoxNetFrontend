@@ -13,8 +13,8 @@ const app = express();
 
 const corsOption = {
   methods: "GET, POST, PUT, DELETE",
+  origin: "http://localhost:5173",
   optionsSuccessStatus: 204,
-  origin: process.env.CORS,
   preflightContinue: false,
   credentials: true,
 };
@@ -22,9 +22,9 @@ const corsOption = {
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOption));
-app.use("/auth/api", authRoutes);
-app.use("/user/api", userRoutes);
-app.use("/chat/api", chatRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/user", userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server Lisiten on Port ${PORT}`);
