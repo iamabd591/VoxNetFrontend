@@ -1,7 +1,12 @@
+import { Toaster } from "react-hot-toast";
+import Outlet from "./Routes/Outlet";
 const App = () => {
   return (
-    <div className='text-2xl text-red-700 font-semibold'>App</div>
-  )
-}
+    <>
+      <Outlet />
+      <Toaster />
+    </>
+  );
+};
 
-export default App
+export default App;
