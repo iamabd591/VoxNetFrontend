@@ -23,8 +23,7 @@ export const SignUp = async (req, res) => {
         .status(400)
         .json({ message: "Gender must be 'male' or 'female'" });
     }
-    const avtarEndpoint = gender === "male" ? "boy" : "girl";
-    const profilePic = `https://avatar.iran.liara.run/public/${avtarEndpoint}`;
+    const profilePic = `https://avatar.iran.liara.run/username?username=${fullName}`;
 
     const newUser = new User({
       password: hashedPassword,
@@ -157,7 +156,7 @@ export const onBoarding = async (req, res) => {
   }
   try {
     await User.findOneAndUpdate(
-      req.body.userId,
+      req.user._id,
       { ...req.body, isOnBoarded: true },
       { new: true, runValidators: true }
     );
