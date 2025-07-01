@@ -25,7 +25,7 @@ const SignUpForm = () => {
     mutationFn: signUp,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth"] });
-      toast.success("Sign up successful");
+      toast.success("Sign up successfully");
       navigate("/onboarding");
     },
     onError: (error) => {

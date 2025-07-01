@@ -24,12 +24,36 @@ const Outlet = () => {
 
   return (
     <Routes>
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
       <Route path="*" element={<NotFound />} />
       <Route
+        path="/signup"
+        element={
+          !isAuthenticated ? (
+            <Signup />
+          ) : (
+            <Navigate to={!isOnBoarded ? "/onboarding" : "/"} />
+          )
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          !isAuthenticated ? (
+            <Login />
+          ) : (
+            <Navigate to={isOnBoarded ? "/" : "/onboarding"} />
+          )
+        }
+      />
+      <Route
         path="/onboarding"
-        element={isAuthenticated ? <Onboarding /> : <Navigate to="/login" />}
+        element={
+          isAuthenticated && !isOnBoarded ? (
+            <Onboarding />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
       />
       <Route
         path="/notification"
