@@ -7,7 +7,7 @@ const Signup = () => {
       data-theme="synthwave"
     >
       <div
-        className="border  border-primary/25 flex flex-col lg:flex-row 
+        className="border border-primary/25 flex flex-col lg:flex-row 
       w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden"
       >
         <SignUpForm />
