@@ -1,21 +1,51 @@
 import { axiosInstance } from "./utils";
 
 export const signUp = async (values) => {
-  const { data } = await axiosInstance.post("/auth/signup", values);
-  return data;
+  try {
+    const { data } = await axiosInstance.post("/auth/signup", values);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
 
 export const login = async (values) => {
-  const { data } = await axiosInstance.post("/auth/login", values);
-  return data;
+  try {
+    const { data } = await axiosInstance.post("/auth/login", values);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return error.message;
+  }
+};
+
+export const logout = async () => {
+  try {
+    const { data } = await axiosInstance.post("/auth/logout");
+    return data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
 
 export const getAuthUser = async () => {
-  const res = await axiosInstance.get("/auth/me");
-  return res.data;
+  try {
+    const res = await axiosInstance.get("/auth/me");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
 
 export const onBoarding = async (values) => {
-  const res = await axiosInstance.post("/auth/onBoarding", values);
-  return res.data;
+  try {
+    const res = await axiosInstance.post("/auth/onBoarding", values);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };

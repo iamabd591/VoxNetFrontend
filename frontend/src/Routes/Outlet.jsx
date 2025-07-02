@@ -1,8 +1,9 @@
 import PageLoader from "../components/common/PageLoader/PageLoader";
 import Notification from "../Pages/Notification/Notification";
+import Layout from "../components/common/Layout/Layout";
 import { Navigate, Route, Routes } from "react-router";
-import NotFound from "../Pages/NotFound/NotFound";
 import Onboarding from "../Pages/Auth/Onboarding";
+import NotFound from "../Pages/NotFound/NotFound";
 import useAuthHook from "../hooks/useAuthHook";
 import Signup from "../Pages/Auth/Signup";
 import Login from "../Pages/Auth/Login";
@@ -59,7 +60,9 @@ const Outlet = () => {
         path="/notification"
         element={
           isAuthenticated && isOnBoarded ? (
-            <Notification />
+            <Layout>
+              <Notification />
+            </Layout>
           ) : (
             <Navigate to="/login" />
           )
@@ -68,20 +71,34 @@ const Outlet = () => {
       <Route
         path="/chat"
         element={
-          isAuthenticated && isOnBoarded ? <Chat /> : <Navigate to="/login" />
+          isAuthenticated && isOnBoarded ? (
+            <Layout>
+              <Chat />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
         }
       />
       <Route
         path="/call"
         element={
-          isAuthenticated && isOnBoarded ? <Call /> : <Navigate to="/login" />
+          isAuthenticated && isOnBoarded ? (
+            <Layout>
+              <Call />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
         }
       />
       <Route
         path="/"
         element={
           isAuthenticated && isOnBoarded ? (
-            <Home />
+            <Layout showSidebar={true}>
+              <Home />
+            </Layout>
           ) : (
             <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
           )

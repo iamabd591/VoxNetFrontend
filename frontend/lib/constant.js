@@ -1,3 +1,5 @@
+import { FiBell, FiHome, FiUser } from "react-icons/fi";
+
 export const THEMES = [
   {
     name: "light",
@@ -197,3 +199,24 @@ export const LANGUAGE_TO_FLAG = {
   turkish: "tr",
   dutch: "nl",
 };
+
+export const sidebarLinks = [
+  {
+    icon: FiHome,
+    title: "Home",
+    path: "/",
+    id: "1",
+  },
+  {
+    title: "Friends",
+    path: "/friends",
+    icon: FiUser,
+    id: "2",
+  },
+  {
+    title: "Notification",
+    path: "/notification",
+    icon: FiBell,
+    id: "3",
+  },
+];
