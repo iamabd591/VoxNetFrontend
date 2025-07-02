@@ -27,7 +27,7 @@ const Login = () => {
       setTimeout(() => navigate("/"), 100);
     },
     onError: (error) => {
-      toast.error("Login failed");
+      toast.error(error.message || "Login failed");
       console.error("Login failed", error);
     },
   });
@@ -150,9 +150,8 @@ const Login = () => {
                 Don't have an account?
                 <Link to="/signup" className="text-primary hover:underline">
                   {" "}
-                  Sign Up 
-                </Link>
-                  {" "}
+                  Sign Up
+                </Link>{" "}
                 now
               </p>
             </div>

@@ -60,7 +60,7 @@ const Outlet = () => {
         path="/notification"
         element={
           isAuthenticated && isOnBoarded ? (
-            <Layout>
+            <Layout showSidebar={true}>
               <Notification />
             </Layout>
           ) : (

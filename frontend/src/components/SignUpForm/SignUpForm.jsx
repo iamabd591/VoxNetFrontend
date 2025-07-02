@@ -29,7 +29,7 @@ const SignUpForm = () => {
       navigate("/onboarding");
     },
     onError: (error) => {
-      toast.error("Signup failed");
+      toast.error(error.message || "Signup failed");
       console.error("Signup failed", error);
     },
   });

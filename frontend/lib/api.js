@@ -5,8 +5,8 @@ export const signUp = async (values) => {
     const { data } = await axiosInstance.post("/auth/signup", values);
     return data;
   } catch (error) {
-    console.log(error);
-    return null;
+    const message = error?.response?.data?.message || "Sign up failed";
+    throw new Error(message);
   }
 };
 
@@ -15,8 +15,8 @@ export const login = async (values) => {
     const { data } = await axiosInstance.post("/auth/login", values);
     return data;
   } catch (error) {
-    console.log(error);
-    return error.message;
+    const message = error?.response?.data?.message || "Login failed";
+    throw new Error(message);
   }
 };
 
@@ -25,8 +25,8 @@ export const logout = async () => {
     const { data } = await axiosInstance.post("/auth/logout");
     return data;
   } catch (error) {
-    console.log(error);
-    return null;
+    const message = error?.response?.data?.message || "Logout failed";
+    throw new Error(message);
   }
 };
 
@@ -35,8 +35,8 @@ export const getAuthUser = async () => {
     const res = await axiosInstance.get("/auth/me");
     return res.data;
   } catch (error) {
-    console.log(error);
-    return null;
+    const message = error?.response?.data?.message || "Something went wrong";
+    throw new Error(message);
   }
 };
 
@@ -45,7 +45,7 @@ export const onBoarding = async (values) => {
     const res = await axiosInstance.post("/auth/onBoarding", values);
     return res.data;
   } catch (error) {
-    console.log(error);
-    return null;
+    const message = error?.response?.data?.message || "Onboarding failed";
+    throw new Error(message);
   }
 };

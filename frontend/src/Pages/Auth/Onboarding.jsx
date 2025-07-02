@@ -32,11 +32,10 @@ const Onboarding = () => {
       setTimeout(() => navigate("/"), 100);
     },
     onError: (error) => {
-      toast.error("OnBoarding failed");
+      toast.error(error.message || "OnBoarding failed");
       console.error("OnBoarding failed", error);
     },
   });
-  console.log(authUser);
   const formik = useFormik({
     initialValues: {
       language: "",
