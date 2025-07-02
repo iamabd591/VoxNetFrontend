@@ -49,3 +49,45 @@ export const onBoarding = async (values) => {
     throw new Error(message);
   }
 };
+
+export const getFriends = async () => {
+  try {
+    const res = await axiosInstance.get("/user/friends");
+    return res.data;
+  } catch (error) {
+    const message = error?.response?.data?.message || "Get friends failed";
+    throw new Error(message);
+  }
+};
+
+export const getRecomendeUsers = async () => {
+  try {
+    const res = await axiosInstance.get("/user/recomended");
+    return res.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Get recomended users failed";
+    throw new Error(message);
+  }
+};
+
+export const friendRequest = async () => {
+  try {
+    const res = await axiosInstance.get("/user/outgoing-friend-requets");
+    return res.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Get friend request failed";
+    throw new Error(message);
+  }
+};
+
+export const SendFriendRequest = async (userId) => {
+  try {
+    const res = await axiosInstance.post(`/user/friend-request/${userId}`);
+    return res.data;
+  } catch (error) {
+    const message = error?.response?.data?.message || "Friend request failed";
+    throw new Error(message);
+  }
+};
