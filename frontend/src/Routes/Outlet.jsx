@@ -4,10 +4,10 @@ import Layout from "../components/common/Layout/Layout";
 import { Navigate, Route, Routes } from "react-router";
 import Onboarding from "../Pages/Auth/Onboarding";
 import NotFound from "../Pages/NotFound/NotFound";
+import ChatPage from "../Pages/Chat/ChatPage";
 import useAuthHook from "../hooks/useAuthHook";
 import Signup from "../Pages/Auth/Signup";
 import Login from "../Pages/Auth/Login";
-import Chat from "../Pages/Chat/Chat";
 import Call from "../Pages/Call/Call";
 import Home from "../Pages/Home/Home";
 
@@ -69,14 +69,14 @@ const Outlet = () => {
         }
       />
       <Route
-        path="/chat"
+        path="/chat/:id"
         element={
           isAuthenticated && isOnBoarded ? (
             <Layout>
-              <Chat />
+              <ChatPage />
             </Layout>
           ) : (
-            <Navigate to="/login" />
+            <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
           )
         }
       />
@@ -88,7 +88,7 @@ const Outlet = () => {
               <Call />
             </Layout>
           ) : (
-            <Navigate to="/login" />
+            <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
           )
         }
       />

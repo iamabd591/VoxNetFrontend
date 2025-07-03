@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.str-chat__channel {
+  background: linear-gradient(to bottom, #c9e8c9, #b7e7bb);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 100%;
+}
+
+.str-chat__container {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin: 0 auto !important;
+  height: 80% !important;
+  border-radius: 8px;
+  max-width: 1200px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.str-chat__list {
+  background-color: #ffffff;
+  padding: 12px;
+}
+
+.str-chat__list-notifications {
+  display: none;
+}
+
+.str-chat__message-input {
+  border-top: 1px solid #ddd;
+}

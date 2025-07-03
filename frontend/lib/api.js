@@ -113,3 +113,14 @@ export const acceptFriendRequest = async (requestId) => {
     throw new Error(message);
   }
 };
+
+export const getStreamToken = async () => {
+  try {
+    const res = await axiosInstance.get("/chat/get-stream-token");
+    return res.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Failed to get stream token";
+    throw new Error(message);
+  }
+};
