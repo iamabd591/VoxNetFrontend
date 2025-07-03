@@ -64,7 +64,7 @@ const Outlet = () => {
               <Notification />
             </Layout>
           ) : (
-            <Navigate to="/login" />
+            <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
           )
         }
       />

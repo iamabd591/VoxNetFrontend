@@ -91,3 +91,25 @@ export const SendFriendRequest = async (userId) => {
     throw new Error(message);
   }
 };
+
+export const getFriendRequest = async () => {
+  try {
+    const res = await axiosInstance.post("/get-friend-requets");
+    return res.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Get friend request failed";
+    throw new Error(message);
+  }
+};
+
+export const acceptFriendRequest = async (requestId) => {
+  try {
+    const res = await axiosInstance.post(`/accept-friend-request/${requestId}`);
+    return res.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Accept friend request failed";
+    throw new Error(message);
+  }
+};
