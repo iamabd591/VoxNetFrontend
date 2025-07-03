@@ -8,7 +8,7 @@ import ChatPage from "../Pages/Chat/ChatPage";
 import useAuthHook from "../hooks/useAuthHook";
 import Signup from "../Pages/Auth/Signup";
 import Login from "../Pages/Auth/Login";
-import Call from "../Pages/Call/Call";
+import CallPage from "../Pages/Call/CallPage";
 import Home from "../Pages/Home/Home";
 
 const Outlet = () => {
@@ -81,11 +81,11 @@ const Outlet = () => {
         }
       />
       <Route
-        path="/call"
+        path="/call/:id"
         element={
           isAuthenticated && isOnBoarded ? (
             <Layout>
-              <Call />
+              <CallPage />
             </Layout>
           ) : (
             <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
