@@ -1,5 +1,6 @@
 import FriendRequest from "../../Models/FriendRequest.js";
 import User from "../../Models/User.js";
+import mongoose from "mongoose";
 
 export const recommendedUsers = async (req, res) => {
   const currentUser = req.user;
@@ -37,20 +38,21 @@ export const friendsUsers = async (req, res) => {
 export const sentFriendRequest = async (req, res) => {
   try {
     const myId = req.user._id;
-    const { id: recipientId } = req.params;
+    const { id: recipentId } = req.params;
 
-    if (myId === recipientId) {
+    if (myId.toString() === recipentId.toString()) {
+      console.log(true);
       return res
         .status(401)
         .json({ message: "You cannot send a friend request to yourself" });
     }
 
-    const recipientUser = await User.findById(recipientId);
-    if (!recipientUser) {
-      return res.status(404).json({ message: "Recipient not found" });
+    const recipentUser = await User.findById(recipentId);
+    if (!recipentUser) {
+      return res.status(404).json({ message: "recipent not found" });
     }
 
-    if (recipientUser.friends.includes(myId)) {
+    if (recipentUser.friends.includes(myId)) {
       return res
         .status(401)
         .json({ message: "You are already friends with this user" });
@@ -58,8 +60,8 @@ export const sentFriendRequest = async (req, res) => {
 
     const existingRequest = await FriendRequest.findOne({
       $or: [
-        { sender: myId, recipient: recipientId },
-        { sender: recipientId, recipient: myId },
+        { sender: myId, recipent: recipentId },
+        { sender: recipentId, recipent: myId },
       ],
     });
 
@@ -71,7 +73,7 @@ export const sentFriendRequest = async (req, res) => {
 
     const requestSent = await FriendRequest.create({
       sender: myId,
-      recipient: recipientId,
+      recipent: recipentId,
     });
 
     return res.status(201).json({
@@ -93,7 +95,7 @@ export const acceptFriendRequest = async (req, res) => {
       return res.status(404).json({ message: "Friend request not found" });
     }
 
-    if (friendRequest.recipient.toString() !== req.user._id.toString()) {
+    if (friendRequest.recipent.toString() !== req.user._id.toString()) {
       return res
         .status(403)
         .json({ message: "You are not authorized to accept this request" });
@@ -103,10 +105,10 @@ export const acceptFriendRequest = async (req, res) => {
     await friendRequest.save();
 
     await User.findByIdAndUpdate(friendRequest.sender, {
-      $addToSet: { friends: friendRequest.recipient },
+      $addToSet: { friends: friendRequest.recipent },
     });
 
-    await User.findByIdAndUpdate(friendRequest.recipient, {
+    await User.findByIdAndUpdate(friendRequest.recipent, {
       $addToSet: { friends: friendRequest.sender },
     });
 
@@ -129,7 +131,7 @@ export const rejectFriendRequest = async (req, res) => {
       return res.status(404).json({ message: "Friend request not found" });
     }
 
-    if (friendRequest.recipient.toString() !== req.user._id.toString()) {
+    if (friendRequest.recipent.toString() !== req.user._id.toString()) {
       return res
         .status(403)
         .json({ message: "You are not authorized to reject this request" });
@@ -150,19 +152,24 @@ export const rejectFriendRequest = async (req, res) => {
 
 export const getFriendRequests = async (req, res) => {
   try {
+    const allRequest = await FriendRequest.find({});
+    console.log("All:", allRequest);
+
     const incomingRequests = await FriendRequest.find({
-      recipient: req.user._id,
+      recipent: new mongoose.Types.ObjectId(req.user._id),
       status: "pending",
     }).populate("sender", "fullName profileUrl location");
 
     const acceptedSentRequests = await FriendRequest.find({
-      sender: req.user._id,
+      sender: new mongoose.Types.ObjectId(req.user._id),
       status: "accepted",
-    }).populate("recipient", "fullName profileUrl");
+    }).populate("recipent", "fullName profileUrl");
+
+    console.log("Incoming:", incomingRequests);
 
     return res.status(200).json({
-      incomingRequests: incomingRequests,
-      acceptedSentRequests: acceptedSentRequests,
+      incomingRequests,
+      acceptedSentRequests,
     });
   } catch (error) {
     return res.status(500).json({
@@ -170,6 +177,7 @@ export const getFriendRequests = async (req, res) => {
     });
   }
 };
+
 
 export const outgoingFriendRequets = async (req, res) => {
   try {

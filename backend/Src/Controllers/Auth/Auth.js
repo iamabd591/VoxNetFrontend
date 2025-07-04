@@ -145,7 +145,17 @@ export const ForgotPassword = async (req, res) => {
 };
 
 export const Logout = (req, res) => {
-  res.clearCookie("jwt");
+  const token = req.cookies?.jwt;
+  if (!token) {
+    return res
+      .status(400)
+      .json({ message: "No active session or token found" });
+  }
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+  });
   return res.status(200).json({ message: "Logout successfully" });
 };
 
