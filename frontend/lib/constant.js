@@ -183,21 +183,55 @@ export const LANGUAGES = [
 ];
 
 export const LANGUAGE_TO_FLAG = {
-  english: "gb",
-  spanish: "es",
-  french: "fr",
-  german: "de",
-  mandarin: "cn",
-  japanese: "jp",
-  korean: "kr",
-  urdud: "pk",
-  hindi: "in",
-  russian: "ru",
-  portuguese: "pt",
-  arabic: "sa",
-  italian: "it",
-  turkish: "tr",
-  dutch: "nl",
+  english: "gb", // United Kingdom
+  spanish: "es", // Spain
+  french: "fr", // France
+  german: "de", // Germany
+  mandarin: "cn", // China
+  japanese: "jp", // Japan
+  korean: "kr", // South Korea
+  urdu: "pk", // Pakistan
+  hindi: "in", // India
+  russian: "ru", // Russia
+  portuguese: "pt", // Portugal
+  arabic: "sa", // Saudi Arabia
+  italian: "it", // Italy
+  turkish: "tr", // Turkey
+  dutch: "nl", // Netherlands
+  bengali: "bd", // Bangladesh
+  tamil: "lk", // Sri Lanka
+  telugu: "in", // India
+  marathi: "in", // India
+  punjabi: "pk", // Pakistan (or "in" for Indian Punjabi)
+  malay: "my", // Malaysia
+  vietnamese: "vn", // Vietnam
+  thai: "th", // Thailand
+  indonesian: "id", // Indonesia
+  swahili: "ke", // Kenya
+  filipino: "ph", // Philippines
+  polish: "pl", // Poland
+  ukrainian: "ua", // Ukraine
+  romanian: "ro", // Romania
+  greek: "gr", // Greece
+  czech: "cz", // Czech Republic
+  swedish: "se", // Sweden
+  hungarian: "hu", // Hungary
+  finnish: "fi", // Finland
+  hebrew: "il", // Israel
+  persian: "ir", // Iran
+  nepali: "np", // Nepal
+  pashto: "af", // Afghanistan
+  sinhala: "lk", // Sri Lanka
+  norwegian: "no", // Norway
+  danish: "dk", // Denmark
+  malayalam: "in", // India
+  kannada: "in", // India
+  uzbek: "uz", // Uzbekistan
+  azerbaijani: "az", // Azerbaijan
+  georgian: "ge", // Georgia
+  yoruba: "ng", // Nigeria (main)
+  yoruba_benin: "bj", // Benin
+  yoruba_togo: "tg", // Togo
 };
 
 export const sidebarLinks = [

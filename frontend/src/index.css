@@ -3,20 +3,22 @@
 @tailwind utilities;
 
 .str-chat__channel {
-  background: linear-gradient(to bottom, #c9e8c9, #b7e7bb);
+  background: linear-gradient(to bottom, #170d37, #e779c1);
   justify-content: center;
   align-items: center;
   display: flex;
+  padding: 10px;
   height: 100%;
+  width: 100%;
 }
 
 .str-chat__container {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   margin: 0 auto !important;
-  height: 80% !important;
+  height: 90% !important;
   border-radius: 8px;
-  max-width: 1200px;
   overflow: hidden;
+  max-width: 90%;
   width: 100%;
 }
 
@@ -32,3 +34,4 @@
 .str-chat__message-input {
   border-top: 1px solid #ddd;
 }
+

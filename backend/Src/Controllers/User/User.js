@@ -132,16 +132,15 @@ export const rejectFriendRequest = async (req, res) => {
     }
 
     if (friendRequest.recipent.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized to reject this request" });
+      return res.status(403).json({
+        message: "You are not authorized to reject this request",
+      });
     }
 
-    friendRequest.status = "rejected";
-    await friendRequest.save();
+    await FriendRequest.findByIdAndDelete(requestId);
 
     return res.status(200).json({
-      message: "Friend request rejected successfully",
+      message: "Friend request rejected and deleted successfully",
     });
   } catch (error) {
     return res.status(500).json({
@@ -153,7 +152,7 @@ export const rejectFriendRequest = async (req, res) => {
 export const getFriendRequests = async (req, res) => {
   try {
     const allRequest = await FriendRequest.find({});
-    console.log("All:", allRequest);
+    // console.log("All:", allRequest);
 
     const incomingRequests = await FriendRequest.find({
       recipent: new mongoose.Types.ObjectId(req.user._id),
@@ -177,7 +176,6 @@ export const getFriendRequests = async (req, res) => {
     });
   }
 };
-
 
 export const outgoingFriendRequets = async (req, res) => {
   try {

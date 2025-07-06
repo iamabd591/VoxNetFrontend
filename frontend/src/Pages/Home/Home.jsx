@@ -1,25 +1,23 @@
+import RecomendedUserCard from "../../components/RecomendedUserCard/RecomendedUserCard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { capitalize, getLanguageFlagUrl } from "../../../lib/lib";
 import FriendCard from "../../components/FriendCard/FriendCard";
-import Loader from "../../components/common/Loader/Loader";
 import Prompt from "../../components/common/Prompt/Prompt";
-import toast, { CheckmarkIcon } from "react-hot-toast";
-import { FiUser, FiUserPlus } from "react-icons/fi";
+import Loader from "../../components/common/Loader/Loader";
 import { useEffect, useState } from "react";
-import { MdApi } from "react-icons/md";
 import { Link } from "react-router";
+import toast from "react-hot-toast";
 import {
   getRecomendeUsers,
   SendFriendRequest,
   friendRequest,
   getFriends,
 } from "../../../lib/api";
-import Spinner from "../../components/common/Spinner/Spinner";
+import { FiUser } from "react-icons/fi";
 
 const Home = () => {
   const queryClient = useQueryClient();
-
   const [requestIds, setRequestIds] = useState(new Set());
+  const [sendingToUserId, setSendingToUserId] = useState(null);
 
   const { data: friends = [], isLoading: friendsLoding } = useQuery({
     queryKey: ["friends"],
@@ -31,13 +29,16 @@ const Home = () => {
     queryFn: getRecomendeUsers,
   });
 
-  const { data: freiendRequest, isLoading: requestLoading } = useQuery({
+  const { data: freiendRequest } = useQuery({
     queryKey: ["friendRequest"],
     queryFn: friendRequest,
   });
 
   const { mutate: sendRequest, isPending } = useMutation({
     mutationFn: SendFriendRequest,
+    onMutate: (userId) => {
+      setSendingToUserId(userId);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friendRequest"] });
       toast.success("Request sent successfully");
@@ -46,13 +47,16 @@ const Home = () => {
       toast.error(error.message || "Send Request Failed");
       console.error("Send Request Failed", error);
     },
+    onSettled: () => {
+      setSendingToUserId(null);
+    },
   });
 
   useEffect(() => {
     const friendRequestIds = new Set();
-    if (freiendRequest && freiendRequest.length > 0) {
-      freiendRequest.forEach((req) => {
-        friendRequestIds.add(req?.recipient?._id);
+    if (freiendRequest && freiendRequest?.outgoingRequests?.length > 0) {
+      freiendRequest?.outgoingRequests?.forEach((req) => {
+        friendRequestIds.add(req?.recipent?._id);
       });
       setRequestIds(friendRequestIds);
     }
@@ -109,77 +113,13 @@ const Home = () => {
             description={"Check back later for new friends"}
           />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {recomendedUsers?.map((user) => {
-              const hasRequestId = requestIds.has(user._id);
-              const flagUrl = getLanguageFlagUrl(user?.language);
-
-              return (
-                <div
-                  key={user._id}
-                  className="card bg-base-200 hover:shadow-lg transition-all duration-300"
-                >
-                  <div className="card-body p-5 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="avatar size-16 rounded-full">
-                        <img src={user?.profileUrl} alt={user?.fullName} />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">
-                          {user?.fullName}
-                        </h3>
-                        {user?.location && (
-                          <div className="flex items-center text-xs opacity-70 mt-1">
-                            <MdApi className="size-3 mr-1" />
-                            {user?.location}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      <span className="badge badge-secondary text-xs">
-                        {flagUrl && (
-                          <img
-                            src={flagUrl}
-                            alt="flag"
-                            className="h-3 mr-1 inline-block"
-                          />
-                        )}
-                        Native: {capitalize(user?.language)}
-                      </span>
-                    </div>
-
-                    {user?.bio && (
-                      <p className="text-sm opacity-70">{user?.bio}</p>
-                    )}
-
-                    <button
-                      className={`btn w-full mt-2 ${
-                        hasRequestId ? "btn-disabled" : "btn-primary"
-                      }`}
-                      onClick={() => sendRequest(user._id)}
-                      disabled={hasRequestId || isPending}
-                    >
-                      {requestLoading ? (
-                        <Spinner />
-                      ) : hasRequestId ? (
-                        <>
-                          <CheckmarkIcon className="size-4 mr-2" />
-                          Request Sent
-                        </>
-                      ) : (
-                        <>
-                          <FiUserPlus className="size-4 mr-2" />
-                          Send Friend Reqest
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <RecomendedUserCard
+            recomendedUsers={recomendedUsers}
+            sendingToUserId={sendingToUserId}
+            sendRequest={sendRequest}
+            requestIds={requestIds}
+            isPending={isPending}
+          />
         )}
       </div>
     </div>

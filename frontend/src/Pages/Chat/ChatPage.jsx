@@ -30,30 +30,33 @@ const ChatPage = () => {
     queryFn: getStreamToken,
     enabled: !!authUser,
   });
-
+  console.log(data);
   useEffect(() => {
     const initChat = async () => {
-      if (!data?.token || !authUser) return;
+      if (!data?.token || !authUser) {
+        console.warn("Missing token or user", { token: data?.token, authUser });
+        return;
+      }
       try {
         const client = StreamChat.getInstance(STREAM_API_KEY);
         await client.connectUser(
           {
-            id: authUser?._id,
-            name: authUser?.fullName,
-            profileUrl: authUser?.profileUrl,
+            id: authUser._id, // MUST match the user id used in `createToken()`
+            name: authUser.fullName,
+            image: authUser.profileUrl,
           },
-          data?.token
+          data.token
         );
-        const channelId = [authUser?._id, id].sort().join("-");
-        const currentChannel = client.channel("message", channelId, {
-          members: [authUser?._id, id],
+        const channelId = [authUser._id, id].sort().join("-");
+        const currentChannel = client.channel("messaging", channelId, {
+          members: [authUser._id, id],
         });
         await currentChannel.watch();
         setChannel(currentChannel);
         setChatClient(client);
       } catch (error) {
-        console.log("Error initializinf chat:", error);
-        toast.error("Could not connent to chat. Please try again");
+        console.error("Error initializing chat:", error);
+        toast.error("Could not connect to chat. Please try again");
       } finally {
         setLoading(false);
       }
@@ -76,10 +79,14 @@ const ChatPage = () => {
     }
   };
   if (isLoading || !chatClient || !channel) {
-    <Spinner />;
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
   }
   return (
-    <div className="h-[93vh]">
+    <div className="h-[95vh]">
       <Chat client={chatClient}>
         <Channel channel={channel}>
           <div className="w-full relative">
@@ -90,7 +97,7 @@ const ChatPage = () => {
               <MessageInput focus />
             </Window>
           </div>
-          <Thread />
+          {/* <Thread /> */}
         </Channel>
       </Chat>
     </div>

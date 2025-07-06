@@ -1,9 +1,14 @@
+import { FiBell, FiClock, FiMessageSquare, FiUserCheck } from "react-icons/fi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { acceptFriendRequest, getFriendRequest } from "../../../lib/api";
-import Prompt from "../../components/common/Prompt/Prompt";
 import Loader from "../../components/common/Loader/Loader";
-import { FiUserCheck } from "react-icons/fi";
+import Prompt from "../../components/common/Prompt/Prompt";
 import toast from "react-hot-toast";
+import {
+  acceptFriendRequest,
+  getFriendRequest,
+  rejectFriendRequest,
+} from "../../../lib/api";
+import Spinner from "../../components/common/Spinner/Spinner";
 
 const Notification = () => {
   const queryClient = useQueryClient();
@@ -24,8 +29,24 @@ const Notification = () => {
       console.error("Send Request Failed", error);
     },
   });
+
+  const { mutate: rejectedFriendRequest, isPending:isReject } = useMutation({
+    mutationFn: rejectFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["friendRequests"] });
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
+      toast.success("Request Reject Successfully ");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Send Request Failed");
+      console.error("Reject Request Failed", error);
+    },
+  });
   const incommingRequests = freiendRequests?.incomingRequests || [];
   const acceptedRequests = freiendRequests?.acceptedSentRequests || [];
+
+  console.log("Accepted", acceptedRequests);
+  console.log("Incomming", incommingRequests);
 
   return (
     <div className="p-4 sm:p-4 lg:p-8" data-theme="synthwave">
@@ -68,18 +89,30 @@ const Notification = () => {
                               </h3>
                               <div className="flex flex-wrap gap-1.5 mt-1">
                                 <span className="badge badge-secondary badge-sm">
-                                  Native: {request?.sender?.language}
+                                  {request?.sender?.location}
                                 </span>
                               </div>
                             </div>
                           </div>
-                          <button
-                            onClick={() => accepteFriendRequest(request?._id)}
-                            className="btn btn-primary btn-sm"
-                            disabled={isPending}
-                          >
-                            Accept
-                          </button>
+                          <div className="flex justify-center items-center gap-x-2">
+                            <button
+                              onClick={() => accepteFriendRequest(request?._id)}
+                              className="btn btn-primary btn-sm"
+                              disabled={isPending || isReject}
+                            >
+                              {isPending ? <Spinner /> : "Accept"}
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                rejectedFriendRequest(request?._id)
+                              }
+                              className="btn btn-secondary btn-sm"
+                              disabled={isReject || isPending}
+                            >
+                              {isReject ? <Spinner /> : "Reject"}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -88,41 +121,41 @@ const Notification = () => {
               </section>
             )}
 
-            {acceptedRequests.length > 0 && (
+            {acceptedRequests?.length > 0 && (
               <section className="space-y-4">
                 <h2 className="text-xl font-semibold flex items-center gap-2">
-                  <BellIcon className="h-5 w-5 text-success" />
+                  <FiBell className="h-5 w-5 text-success" />
                   New Connections
                 </h2>
                 <div className="space-y-3">
-                  {acceptedRequests.map((notification) => (
+                  {acceptedRequests?.map((notification) => (
                     <div
-                      key={notification._id}
+                      key={notification?._id}
                       className="card bg-base-200 shadow-sm"
                     >
                       <div className="card-body p-4">
                         <div className="flex items-start gap-3">
                           <div className="avatar mt-1 size-10 rounded-full">
                             <img
-                              src={notification.recipient.profilePic}
-                              alt={notification.recipient.fullName}
+                              src={notification?.recipent?.profileUrl}
+                              alt={notification?.recipent?.fullName}
                             />
                           </div>
                           <div className="flex-1">
                             <h3 className="font-semibold">
-                              {notification.recipient.fullName}
+                              {notification?.recipent?.fullName}
                             </h3>
                             <p className="text-sm my-1">
-                              {notification.recipient.fullName} accepted your
+                              {notification?.recipent?.fullName} accepted your
                               friend request
                             </p>
                             <p className="text-xs flex items-center opacity-70">
-                              <ClockIcon className="h-3 w-3 mr-1" />
+                              <FiClock className="h-3 w-3 mr-1" />
                               Recently
                             </p>
                           </div>
                           <div className="badge badge-success">
-                            <MessageSquareIcon className="h-3 w-3 mr-1" />
+                            <FiMessageSquare className="h-3 w-3 mr-1" />
                             New Friend
                           </div>
                         </div>

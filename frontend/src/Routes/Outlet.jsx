@@ -2,13 +2,13 @@ import PageLoader from "../components/common/PageLoader/PageLoader";
 import Notification from "../Pages/Notification/Notification";
 import Layout from "../components/common/Layout/Layout";
 import { Navigate, Route, Routes } from "react-router";
-import Onboarding from "../Pages/Auth/Onboarding";
 import NotFound from "../Pages/NotFound/NotFound";
-import ChatPage from "../Pages/Chat/ChatPage";
+import Onboarding from "../Pages/Auth/Onboarding";
 import useAuthHook from "../hooks/useAuthHook";
+import CallPage from "../Pages/Call/CallPage";
+import ChatPage from "../Pages/Chat/ChatPage";
 import Signup from "../Pages/Auth/Signup";
 import Login from "../Pages/Auth/Login";
-import CallPage from "../Pages/Call/CallPage";
 import Home from "../Pages/Home/Home";
 
 const Outlet = () => {

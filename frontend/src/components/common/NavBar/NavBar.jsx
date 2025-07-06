@@ -5,6 +5,7 @@ import { MdOutlineVoiceChat } from "react-icons/md";
 import { FiBell, FiLogOut } from "react-icons/fi";
 import { logout } from "../../../../lib/api";
 import toast from "react-hot-toast";
+import Spinner from "../Spinner/Spinner";
 
 const NavBar = () => {
   const location = useLocation();
@@ -12,12 +13,12 @@ const NavBar = () => {
   const { authUser } = useAuthHook();
   const queryClient = useQueryClient();
   const isChatPath = location.pathname?.startsWith("/chat");
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: logout,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    onSuccess: async () => {
+      await queryClient.setQueryData(["auth"], null);
       toast.success("Logout successfully");
-      navigate("/login");
+      setTimeout(() => navigate("/login"), 100);
     },
     onError: (error) => {
       toast.error(error.message || "Logout failed");
@@ -30,7 +31,11 @@ const NavBar = () => {
       data-theme="synthwave"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex items-center w-full ${isChatPath ? 'justify-between' : 'justify-end'}`}>
+        <div
+          className={`flex items-center w-full ${
+            isChatPath ? "justify-between" : "justify-end"
+          }`}
+        >
           {isChatPath && (
             <Link to="/" className="flex items-center gap-2.5">
               <MdOutlineVoiceChat className="size-12 text-primary" />
@@ -51,8 +56,16 @@ const NavBar = () => {
                 <img src={authUser?.profileUrl} alt="user Profile" />
               </div>
             </div>
-            <button className="btn btn-ghost btn-circle" onClick={mutate}>
-              <FiLogOut className="size-5 text-base-content opacity-70" />
+            <button
+              className="btn btn-ghost btn-circle"
+              disabled={isPending}
+              onClick={mutate}
+            >
+              {isPending ? (
+                <Spinner />
+              ) : (
+                <FiLogOut className="size-5 text-base-content opacity-70" />
+              )}
             </button>
           </div>
         </div>

@@ -60,7 +60,11 @@ const CallPage = () => {
   }, [data?.token, authUser, id, STREAM_API_KEY]);
 
   if (connecting || isLoading) {
-    return <Spinner />;
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
   }
 
   return (
@@ -71,8 +75,9 @@ const CallPage = () => {
       <div className="relative">
         {client && call ? (
           <StreamVideo client={client}>
-            <StreamCall call={call} />
-            <CallContent />
+            <StreamCall call={call}>
+              <CallContent />
+            </StreamCall>
           </StreamVideo>
         ) : (
           <div className="flex items-center justify-center h-full">

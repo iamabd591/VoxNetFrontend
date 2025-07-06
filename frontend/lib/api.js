@@ -94,7 +94,7 @@ export const SendFriendRequest = async (userId) => {
 
 export const getFriendRequest = async () => {
   try {
-    const res = await axiosInstance.post("/get-friend-requets");
+    const res = await axiosInstance.get("user/get-friend-requets");
     return res.data;
   } catch (error) {
     const message =
@@ -105,11 +105,24 @@ export const getFriendRequest = async () => {
 
 export const acceptFriendRequest = async (requestId) => {
   try {
-    const res = await axiosInstance.post(`/accept-friend-request/${requestId}`);
+    const res = await axiosInstance.put(`/user/accept-friend-request/${requestId}`);
     return res.data;
   } catch (error) {
     const message =
       error?.response?.data?.message || "Accept friend request failed";
+    throw new Error(message);
+  }
+};
+
+export const rejectFriendRequest = async (requestId) => {
+  try {
+    const res = await axiosInstance.delete(
+      `/user/reject-friend-request/${requestId}`
+    );
+    return res.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Reject friend request failed";
     throw new Error(message);
   }
 };
