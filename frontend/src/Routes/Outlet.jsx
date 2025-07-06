@@ -10,6 +10,7 @@ import ChatPage from "../Pages/Chat/ChatPage";
 import Signup from "../Pages/Auth/Signup";
 import Login from "../Pages/Auth/Login";
 import Home from "../Pages/Home/Home";
+import Friends from "../Pages/Friends/Friends";
 
 const Outlet = () => {
   const { isLoading, authUser } = useAuthHook();
@@ -62,6 +63,18 @@ const Outlet = () => {
           isAuthenticated && isOnBoarded ? (
             <Layout showSidebar={true}>
               <Notification />
+            </Layout>
+          ) : (
+            <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+          )
+        }
+      />
+       <Route
+        path="/friends"
+        element={
+          isAuthenticated && isOnBoarded ? (
+            <Layout showSidebar={true}>
+              <Friends />
             </Layout>
           ) : (
             <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
