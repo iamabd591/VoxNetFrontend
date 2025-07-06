@@ -1,7 +1,13 @@
-import { generateAndSetToken, otpCache } from "../../utils/utils.js";
 import { upsertSteamUser } from "../../client/Stream.js";
 import User from "../../Models/User.js";
 import bcrypt from "bcrypt";
+import {
+  generateAndSetToken,
+  sendOtpToEmail,
+  verifiedOtps,
+  otpCache,
+  saveOTP,
+} from "../../utils/utils.js";
 
 export const SignUp = async (req, res) => {
   const { email, fullName, password, gender } = req.body;
@@ -81,16 +87,34 @@ export const Login = async (req, res) => {
   }
 };
 
-export const getOTP = async (req, res) => {
-  if (!req.body.email) {
+export const GetOTP = async (req, res) => {
+  const { email } = req.body;
+  console.log(email);
+  if (!email) {
     return res.status(400).json({ message: "Missing Credentials" });
   }
+
   try {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-    //TODO Send otp to email
+
+    const otp = saveOTP(email);
+
+    if (!otp) {
+      return res.status(429).json({
+        message:
+          "An OTP was already sent. Please wait before requesting again.",
+      });
+    }
+
+    const isSend = await sendOtpToEmail(email, otp);
+    if (isSend) {
+      return res.status(200).json({ message: `OTP sent to email ${email}` });
+    } else {
+      return res.status(500).json({ message: "Failed to send OTP email" });
+    }
   } catch (error) {
     return res.status(500).json({
       message: `Internal Server Error: ${error.message}`,
@@ -98,45 +122,64 @@ export const getOTP = async (req, res) => {
   }
 };
 
-export const VerifyOTP = async (req, res) => {
+export const VerifyOtp = async (req, res) => {
   const { email, otp } = req.body;
+
   if (!email || !otp) {
-    return res.status(400).json({ message: "Missing Credentials" });
+    return res.status(400).json({ error: "Required Fields Are Missing" });
   }
+
+  const existingUser = await User.findOne({ email });
+  if (!existingUser) {
+    return res.status(404).json({ error: "User Not Found" });
+  }
+
   try {
     const otpData = otpCache.get(email);
-    if (otpData) {
-      return res.status(400).json({ message: "Someting went wrong" });
+    if (!otpData) {
+      return res.status(404).json({ error: "OTP Not Found" });
     }
-    if (otpData.otp != otp) {
-      return res.status(400).json({ message: "Invalid Otp" });
+
+    if (otpData.otp === otp) {
+      otpCache.delete(email);
+      verifiedOtps.set(email, true);
+      return res.status(200).json({ message: "OTP Verified Successfully" });
+    } else {
+      return res.status(400).json({ error: "Invalid OTP" });
     }
-    otpCache.delete(email);
-    return res.status(200).json({ message: "OTP verified successfully" });
   } catch (error) {
-    return res.status(500).json({
-      message: `Internal Server Error: ${error.message}`,
-    });
+    return res
+      .status(500)
+      .json({ error: `Internal Server Error: ${error.message}` });
   }
 };
 
 export const ForgotPassword = async (req, res) => {
-  const { email, newpassword } = req.body;
-  if (!email || !newpassword) {
+  const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
     return res.status(400).json({ message: "Missing Credentials" });
   }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
+    const isVerified = verifiedOtps.get(email);
+    if (!isVerified) {
+      return res.status(403).json({ message: "OTP not verified" });
     }
-    const hashedNewPassword = await bcrypt.hash(newpassword, 10);
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     await User.findOneAndUpdate(
       { email },
       { password: hashedNewPassword },
       { new: true, runValidators: true }
     );
-    res.status(200).json({ message: "Password updated successfully" });
+
+    verifiedOtps.delete(email);
+    return res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
     return res.status(500).json({
       message: `Internal Server Error: ${error.message}`,

@@ -1,18 +1,22 @@
 import PageLoader from "../components/common/PageLoader/PageLoader";
+import VerifyOTP from "../Pages/Auth/ForgotPassword/VerifyOTP";
 import Notification from "../Pages/Notification/Notification";
+import SendOTP from "../Pages/Auth/ForgotPassword/SendOTP";
 import Layout from "../components/common/Layout/Layout";
 import { Navigate, Route, Routes } from "react-router";
 import NotFound from "../Pages/NotFound/NotFound";
 import Onboarding from "../Pages/Auth/Onboarding";
 import useAuthHook from "../hooks/useAuthHook";
+import Friends from "../Pages/Friends/Friends";
 import CallPage from "../Pages/Call/CallPage";
 import ChatPage from "../Pages/Chat/ChatPage";
 import Signup from "../Pages/Auth/Signup";
 import Login from "../Pages/Auth/Login";
 import Home from "../Pages/Home/Home";
-import Friends from "../Pages/Friends/Friends";
+import Cookies from "js-cookie";
 
 const Outlet = () => {
+  const otpRequestedEmail = Cookies.get("otpRequestedEmail");
   const { isLoading, authUser } = useAuthHook();
   const isAuthenticated = Boolean(authUser);
   const isOnBoarded = authUser?.isOnBoarded;
@@ -69,7 +73,7 @@ const Outlet = () => {
           )
         }
       />
-       <Route
+      <Route
         path="/friends"
         element={
           isAuthenticated && isOnBoarded ? (
@@ -114,6 +118,21 @@ const Outlet = () => {
             </Layout>
           ) : (
             <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+          )
+        }
+      />
+      <Route
+        path="/send-otp"
+        element={!isAuthenticated ? <SendOTP /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/verify-otp"
+        element={
+          !isAuthenticated && otpRequestedEmail ? (
+            <VerifyOTP />
+          ) : (
+            <Navigate to="/" />
           )
         }
       />

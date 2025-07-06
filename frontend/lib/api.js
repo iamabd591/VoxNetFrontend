@@ -105,7 +105,9 @@ export const getFriendRequest = async () => {
 
 export const acceptFriendRequest = async (requestId) => {
   try {
-    const res = await axiosInstance.put(`/user/accept-friend-request/${requestId}`);
+    const res = await axiosInstance.put(
+      `/user/accept-friend-request/${requestId}`
+    );
     return res.data;
   } catch (error) {
     const message =
@@ -134,6 +136,26 @@ export const getStreamToken = async () => {
   } catch (error) {
     const message =
       error?.response?.data?.message || "Failed to get stream token";
+    throw new Error(message);
+  }
+};
+
+export const getOTP = async (data) => {
+  try {
+    const res = await axiosInstance.post("/auth/get-otp", data);
+    return res.data;
+  } catch (error) {
+    const message = error?.response?.data?.message || "Failed to send OTP";
+    throw new Error(message);
+  }
+};
+
+export const verifyOTP = async (data) => {
+  try {
+    const res = await axiosInstance.post("/auth/verify-otp", data);
+    return res.data;
+  } catch (error) {
+    const message = error?.response?.data?.message || "Failed to verify OTP";
     throw new Error(message);
   }
 };

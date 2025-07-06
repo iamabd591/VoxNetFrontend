@@ -118,22 +118,32 @@ const Login = () => {
             </div>
 
             <div className="form-control mt-3">
+              <div className="text-right">
+                <Link
+                  to="/send-otp"
+                  className="text-xs text-primary hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
               <label className="label cursor-pointer justify-start gap-2">
                 <input
                   className="checkbox checkbox-sm"
                   type="checkbox"
                   required
                 />
-                <span className="text-xs leading-tight">
-                  I agree to the{" "}
-                  <span className="text-primary hover:underline">
-                    terms of service
-                  </span>{" "}
-                  and{" "}
-                  <span className="text-primary hover:underline">
-                    privacy policy
+                <div>
+                  <span className="text-xs leading-tight">
+                    I agree to the{" "}
+                    <span className="text-primary hover:underline">
+                      terms of service
+                    </span>{" "}
+                    and{" "}
+                    <span className="text-primary hover:underline">
+                      privacy policy
+                    </span>
                   </span>
-                </span>
+                </div>
               </label>
             </div>
 
