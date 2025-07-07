@@ -1,3 +1,4 @@
+import UpdatePassword from "../Pages/Auth/ForgotPassword/UpdatePassword";
 import PageLoader from "../components/common/PageLoader/PageLoader";
 import VerifyOTP from "../Pages/Auth/ForgotPassword/VerifyOTP";
 import Notification from "../Pages/Notification/Notification";
@@ -6,15 +7,15 @@ import Layout from "../components/common/Layout/Layout";
 import { Navigate, Route, Routes } from "react-router";
 import NotFound from "../Pages/NotFound/NotFound";
 import Onboarding from "../Pages/Auth/Onboarding";
-import useAuthHook from "../hooks/useAuthHook";
 import Friends from "../Pages/Friends/Friends";
+import useAuthHook from "../hooks/useAuthHook";
+import Profile from "../Pages/Profile/Profile";
 import CallPage from "../Pages/Call/CallPage";
 import ChatPage from "../Pages/Chat/ChatPage";
 import Signup from "../Pages/Auth/Signup";
 import Login from "../Pages/Auth/Login";
 import Home from "../Pages/Home/Home";
 import Cookies from "js-cookie";
-import UpdatePassword from "../Pages/Auth/ForgotPassword/UpdatePassword";
 
 const Outlet = () => {
   const otpRequestedEmail = Cookies.get("otpRequestedEmail");
@@ -144,6 +145,18 @@ const Outlet = () => {
             <UpdatePassword />
           ) : (
             <Navigate to="/" />
+          )
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          isAuthenticated && isOnBoarded ? (
+            <Layout showSidebar={true}>
+              <Profile />
+            </Layout>
+          ) : (
+            <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
           )
         }
       />

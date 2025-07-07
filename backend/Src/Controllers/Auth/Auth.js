@@ -1,3 +1,4 @@
+import { femaleNumbers, maleNumbers } from "../../utils/constant.js";
 import { upsertSteamUser } from "../../client/Stream.js";
 import User from "../../Models/User.js";
 import bcrypt from "bcrypt";
@@ -29,12 +30,18 @@ export const SignUp = async (req, res) => {
         .status(400)
         .json({ message: "Gender must be 'male' or 'female'" });
     }
-    const profilePic = `https://avatar.iran.liara.run/username?username=${fullName}`;
+    const randomNumber =
+      gender === "male"
+        ? maleNumbers[Math.floor(Math.random() * maleNumbers.length)]
+        : femaleNumbers[Math.floor(Math.random() * femaleNumbers.length)];
+
+    const profilePic = `https://avatar.iran.liara.run/public/${randomNumber}`;
 
     const newUser = new User({
       password: hashedPassword,
       profileUrl: profilePic,
       fullName,
+      gender,
       email,
     });
     await newUser.save();
@@ -220,5 +227,44 @@ export const onBoarding = async (req, res) => {
     return res.status(500).json({
       message: `Internal Server Error: ${error.message}`,
     });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  const userId = req.user._id;
+  const { fullName, bio, location, age, language, gender } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    let newProfileUrl = user.profileUrl;
+    if (gender !== user.gender) {
+      const avatarNumber =
+        gender === "male"
+          ? maleNumbers[Math.floor(Math.random() * maleNumbers.length)]
+          : femaleNumbers[Math.floor(Math.random() * femaleNumbers.length)];
+
+      newProfileUrl = `https://avatar.iran.liara.run/public/${avatarNumber}`;
+    }
+
+    user.profileUrl = newProfileUrl;
+    user.fullName = fullName;
+    user.location = location;
+    user.language = language;
+    user.gender = gender;
+    user.bio = bio;
+    user.age = age;
+
+    await user.save();
+
+    const { password, ...userWithoutPassword } = user.toObject();
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: userWithoutPassword,
+    });
+  } catch (error) {
+    console.error("Update Profile Error:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };

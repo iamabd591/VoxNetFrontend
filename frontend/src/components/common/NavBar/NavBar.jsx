@@ -52,9 +52,11 @@ const NavBar = () => {
               </button>
             </Link>
             <div className="avatar">
-              <div className="w-6 rounded-full">
-                <img src={authUser?.profileUrl} alt="user Profile" />
-              </div>
+              <Link to="/profile">
+                <div className="w-6 rounded-full">
+                  <img src={authUser?.profileUrl} alt="user Profile" />
+                </div>
+              </Link>
             </div>
             <button
               className="btn btn-ghost btn-circle"

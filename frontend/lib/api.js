@@ -171,3 +171,14 @@ export const updatePassword = async (data) => {
     throw new Error(message);
   }
 };
+
+export const updateProfile = async (data) => {
+  try {
+    const res = await axiosInstance.post("/auth/update-profile", data);
+    return res.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Failed to update profile";
+    throw new Error(message);
+  }
+};
