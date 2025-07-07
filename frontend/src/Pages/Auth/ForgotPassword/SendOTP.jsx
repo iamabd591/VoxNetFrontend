@@ -9,24 +9,26 @@ import * as Yup from "yup";
 
 const SendOTP = () => {
   const navigate = useNavigate();
+
   const mutation = useMutation({
     mutationFn: getOTP,
-    onSuccess: () => {
-      toast.success("OTP sent successfully");
-      setTimeout(() => navigate("/verify-otp"), 100);
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to send OTP");
-      console.error("OTP sending failed", error);
-    },
   });
 
   const handleSendOTP = async (values, { setSubmitting, resetForm }) => {
-    console.log(values);
-    Cookies.set("otpRequestedEmail", values.email, { expires: 1 / 144 });
-    mutation.mutate(values);
-    resetForm();
-    setSubmitting(false);
+    mutation.mutate(values, {
+      onSuccess: () => {
+        Cookies.set("otpRequestedEmail", values.email, { expires: 1 / 144 });
+        toast.success("OTP sent successfully");
+        resetForm();
+        setSubmitting(false);
+        navigate("/verify-otp");
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to send OTP");
+        console.error("OTP sending failed", error);
+        setSubmitting(false);
+      },
+    });
   };
 
   const validationSchema = Yup.object({
@@ -35,7 +37,7 @@ const SendOTP = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-base-200"
+      className="min-h-screen flex items-center justify-center bg-base-300"
       data-theme="synthwave"
     >
       <div className="card w-full max-w-lg bg-base-100 shadow-xl p-6">
@@ -69,8 +71,8 @@ const SendOTP = () => {
               </div>
 
               <button
+                className="btn btn-primary w-full text-base font-bold"
                 disabled={isSubmitting || mutation.isPending}
-                className="btn btn-primary w-full"
                 type="submit"
               >
                 {isSubmitting || mutation.isPending ? <Spinner /> : "Send OTP"}

@@ -14,6 +14,7 @@ import Signup from "../Pages/Auth/Signup";
 import Login from "../Pages/Auth/Login";
 import Home from "../Pages/Home/Home";
 import Cookies from "js-cookie";
+import UpdatePassword from "../Pages/Auth/ForgotPassword/UpdatePassword";
 
 const Outlet = () => {
   const otpRequestedEmail = Cookies.get("otpRequestedEmail");
@@ -131,6 +132,16 @@ const Outlet = () => {
         element={
           !isAuthenticated && otpRequestedEmail ? (
             <VerifyOTP />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+      <Route
+        path="/update-password"
+        element={
+          !isAuthenticated && otpRequestedEmail ? (
+            <UpdatePassword />
           ) : (
             <Navigate to="/" />
           )

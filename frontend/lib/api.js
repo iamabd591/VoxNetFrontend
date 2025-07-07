@@ -155,7 +155,19 @@ export const verifyOTP = async (data) => {
     const res = await axiosInstance.post("/auth/verify-otp", data);
     return res.data;
   } catch (error) {
-    const message = error?.response?.data?.message || "Failed to verify OTP";
+    const message = error?.response?.data?.error || "Failed to verify otp";
+    console.log(error);
+    throw new Error(message);
+  }
+};
+
+export const updatePassword = async (data) => {
+  try {
+    const res = await axiosInstance.post("/auth/forgot-password", data);
+    return res.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Failed to update password";
     throw new Error(message);
   }
 };

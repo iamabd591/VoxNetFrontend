@@ -11,14 +11,6 @@ const VerifyOTP = () => {
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: verifyOTP,
-    onSuccess: () => {
-      toast.success("OTP sent successfully");
-      setTimeout(() => navigate("/forgot-password"), 100);
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to verify OTP");
-      console.error("OTP sending failed", error);
-    },
   });
   const inputsRef = useRef([]);
   const handleInput = (e, index, setFieldValue) => {
@@ -38,21 +30,36 @@ const VerifyOTP = () => {
     }, {})
   );
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { setSubmitting }) => {
     const otp = Object.values(values).join("");
     const email = Cookies.get("otpRequestedEmail");
 
     if (!email) {
       toast.error("Email session expired. Please request OTP again.");
+      setSubmitting(false);
       return;
     }
 
-    mutation.mutate({ email, otp });
+    mutation.mutate(
+      { email, otp },
+      {
+        onSuccess: () => {
+          toast.success("OTP verified successfully");
+          setSubmitting(false);
+          navigate("/update-password");
+        },
+        onError: (error) => {
+          toast.error(error.message || "Failed to verify OTP");
+          console.error("OTP verification failed", error.message);
+          setSubmitting(false);
+        },
+      }
+    );
   };
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-base-200 px-4"
+      className="min-h-screen flex items-center justify-center bg-base-300 px-4"
       data-theme="synthwave"
     >
       <div className="card w-full max-w-md bg-base-100 shadow-xl p-6">
@@ -72,38 +79,48 @@ const VerifyOTP = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ setFieldValue, isSubmitting }) => (
-            <Form className="space-y-6">
-              <div className="flex justify-center gap-3">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex flex-col items-center">
-                    <Field
-                      innerRef={(el) => (inputsRef.current[i] = el)}
-                      name={`digit${i}`}
-                      maxLength={1}
-                      inputMode="numeric"
-                      autoComplete="one-time-code"
+          {({ setFieldValue, isSubmitting, values, errors, touched }) => {
+            // const allFilled = Object.values(values).every(
+            //   (v) => v.trim() !== ""
+            // );
+
+            const showError =
+              Object.keys(errors).length > 0 && Object.keys(touched).length > 0;
+
+            return (
+              <Form className="space-y-6">
+                <div className="flex justify-center gap-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <input
+                      key={i}
+                      ref={(el) => (inputsRef.current[i] = el)}
                       className="input input-bordered w-12 h-12 text-center text-xl font-semibold"
                       onChange={(e) => handleInput(e, i, setFieldValue)}
-                    />
-                    <ErrorMessage
+                      autoComplete="one-time-code"
+                      value={values[`digit${i}`]}
+                      inputMode="numeric"
                       name={`digit${i}`}
-                      component="div"
-                      className="text-xs text-red-500"
+                      maxLength={1}
                     />
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
 
-              <button
-                type="submit"
-                className="btn btn-primary w-full"
-                disabled={isSubmitting}
-              >
-                Verify
-              </button>
-            </Form>
-          )}
+                {showError && (
+                  <div className="text-center text-sm text-red-500">
+                    All fields are required and must be digits.
+                  </div>
+                )}
+
+                <button
+                  className="btn btn-primary w-full font-bold text-base"
+                  disabled={isSubmitting}
+                  type="submit"
+                >
+                  Verify
+                </button>
+              </Form>
+            );
+          }}
         </Formik>
       </div>
     </div>
