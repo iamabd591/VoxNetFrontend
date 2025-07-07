@@ -50,7 +50,7 @@ const SignUpForm = () => {
   return (
     <div className="w-full lg:w-1/2 p-4 sm:p-8 flex-col">
       <div className="flex items-center justify-start gap-2">
-        <MdOutlineVoiceChat className="size-9 text-primary" />
+        <MdOutlineVoiceChat className="size-9 text-primary mt-2" />
         <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wide">
           VoxNet
         </span>
