@@ -72,7 +72,7 @@ const CallPage = () => {
       className="h-screen flex flex-col items-center justify-center"
       data-theme="synthwave"
     >
-      <div className="relative">
+      <div className="relative" data-theme="synthwave">
         {client && call ? (
           <StreamVideo client={client}>
             <StreamCall call={call}>

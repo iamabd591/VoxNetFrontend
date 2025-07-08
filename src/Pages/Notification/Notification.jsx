@@ -75,7 +75,7 @@ const Notification = () => {
                       className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className="card-body p-4">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-5 sm:space-y-0 sm:space-x-5">
                           <div className="flex items-center gap-3">
                             <div className="avatar size-14 rounded-full bg-base-300">
                               <img
@@ -94,7 +94,7 @@ const Notification = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="flex justify-center items-center gap-x-2">
+                          <div className="flex justify-start sm:justify-end items-center gap-x-2">
                             <button
                               onClick={() => accepteFriendRequest(request?._id)}
                               className="btn btn-primary btn-sm"

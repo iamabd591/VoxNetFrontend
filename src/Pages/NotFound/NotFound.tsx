@@ -11,7 +11,7 @@ const NotFound = () => {
       setLoading(false);
     }, 3000);
 
-    return () => clearTimeout(timeout); // cleanup on unmount
+    return () => clearTimeout(timeout);
   }, []);
 
   if (loading) {
@@ -24,7 +24,7 @@ const NotFound = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col justify-center items-center text-center p-4 sm:p-6 md:p-8"
+      className="min-h-screen flex flex-col justify-center items-center text-center p-4 sm:p-6"
       data-theme="synthwave"
     >
       <img
@@ -35,7 +35,7 @@ const NotFound = () => {
 
       <Link
         to="/"
-        className="btn btn-primary text-sm sm:text-base font-semibold mt-4"
+        className="btn btn-primary text-sm sm:text-base font-semibold"
       >
         Go Back Home
       </Link>
