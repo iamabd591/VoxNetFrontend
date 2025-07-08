@@ -11,7 +11,7 @@ const Friends = () => {
   });
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8" data-theme="synthwave">
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen" data-theme="synthwave">
       <h2 className="text-2xl font-bold mb-6">My Friends</h2>
 
       {isLoading ? (

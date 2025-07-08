@@ -63,15 +63,15 @@ const Home = () => {
   }, [freiendRequest]);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8" data-theme="synthwave">
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen" data-theme="synthwave">
       <div className="container mx-auto space-y-10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-row items-center justify-between gap-4">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
             Your Friends
           </h2>
-          <Link to="/notification" className="btn btn-outline btn-sm">
-            <FiUser className="mr-2 size4" />
-            Friend Request
+          <Link to="/friends" className="btn btn-outline btn-sm">
+            <FiUser className="size4" />
+            All Friends
           </Link>
         </div>
 

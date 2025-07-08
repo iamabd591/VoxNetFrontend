@@ -1,18 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useLocation, useNavigate } from "react-router";
 import useAuthHook from "../../../hooks/useAuthHook";
 import { MdOutlineVoiceChat } from "react-icons/md";
 import { FiBell, FiLogOut } from "react-icons/fi";
+import { Link, useNavigate } from "react-router";
 import { logout } from "../../../../lib/api";
-import toast from "react-hot-toast";
 import Spinner from "../Spinner/Spinner";
+import toast from "react-hot-toast";
 
 const NavBar = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { authUser } = useAuthHook();
   const queryClient = useQueryClient();
-  const isChatPath = location.pathname?.startsWith("/chat");
   const { mutate, isPending } = useMutation({
     mutationFn: logout,
     onSuccess: async () => {
@@ -32,18 +30,14 @@ const NavBar = () => {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className={`flex items-center w-full ${
-            isChatPath ? "justify-between" : "justify-end"
-          }`}
+          className={`flex items-center w-full justify-between lg:justify-end`}
         >
-          {isChatPath && (
-            <Link to="/" className="flex items-center gap-2.5">
-              <MdOutlineVoiceChat className="size-12 text-primary" />
-              <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wide">
-                VoxNet
-              </span>
-            </Link>
-          )}
+          <Link to="/" className="flex items-center gap-2.5 lg:hidden">
+            <MdOutlineVoiceChat className="size-8 sm:size-10 text-primary mt-2" />
+            <span className="text-2xl sm:text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wide">
+              VoxNet
+            </span>
+          </Link>
 
           <div className="flex items-center gap-3 sm:gap-4">
             <Link to="/notification">

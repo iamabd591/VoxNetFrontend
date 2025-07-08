@@ -49,7 +49,7 @@ const Notification = () => {
   console.log("Incomming", incommingRequests);
 
   return (
-    <div className="p-4 sm:p-4 lg:p-8" data-theme="synthwave">
+    <div className="p-4 sm:p-4 lg:p-8 min-h-dvh" data-theme="synthwave">
       <div className="container mx-auto max-w-4xl space-y-8">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-8">
           Notifications
